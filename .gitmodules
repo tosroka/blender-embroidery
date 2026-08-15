@@ -1,0 +1,3 @@
+[submodule "pyembroidery"]
+	path = pyembroidery
+	url = git@github.com:EmbroidePy/pyembroidery.git

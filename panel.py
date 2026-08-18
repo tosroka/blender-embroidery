@@ -1,4 +1,4 @@
-import bpy
+import bpy # type: ignore
 
 class HelloWorldPanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_embroidery"

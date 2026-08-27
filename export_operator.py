@@ -42,9 +42,7 @@ def menu_func(self):
 
 # Register and add to the file selector (required to also use F3 search "Text Export Operator" for quick access).
 def register():
-    bpy.utils.register_class(ExportEmbroideryTest)
     bpy.types.TOPBAR_MT_file_export.append(menu_func)
 
 def unregister():
-    bpy.utils.unregister_class(ExportEmbroideryTest)
     bpy.types.TOPBAR_MT_file_export.remove(menu_func)

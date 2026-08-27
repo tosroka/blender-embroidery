@@ -3,20 +3,24 @@
 import os
 import sys
 
-import bpy
+import bpy # type: ignore
 
 from . import export_operator, panel
 
 sys.path.insert(0, os.path.dirname(__file__)+"/pyembroidery")
 import pyembroidery
 
+classes = (panel.HelloWorldPanel,
+           export_operator.ExportEmbroideryTest,)
+
+_register, _unregister = bpy.utils.register_classes_factory(classes)
 
 def register():
-    bpy.utils.register_class(panel.HelloWorldPanel)
+    _register()
     export_operator.register()
     print("Loaded Blender embroidery")
 
 def unregister():
-    export_operator.unregister()
-    bpy.utils.unregister_class(panel.HelloWorldPanel)
+    _unregister()
+    export_operator.unregister()  
     print("Unloaded Blender embroidery")

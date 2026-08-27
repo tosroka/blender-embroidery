@@ -9,4 +9,9 @@ class HelloWorldPanel(bpy.types.Panel):
     bl_category = "Embroidery" # tab name
 
     def draw(self, context):
-        self.layout.label(text="Embroidery")
+        layout = self.layout
+        col = layout.column(align=True)
+        row = col.row()
+        row.alignment = 'CENTER'
+        row.label(text="Export")
+        row.operator("emb.export_test", emboss=True, text="", icon='EXPORT')

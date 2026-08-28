@@ -1,8 +1,8 @@
 from typing import Any
 
-import bpy
+import bpy 
 
-from .export_pattern import ExportFormat, export_object
+from .export_pattern import export_object
 
 
 class ExportEmbroideryTest(bpy.types.Operator):
@@ -11,16 +11,19 @@ class ExportEmbroideryTest(bpy.types.Operator):
     bl_label = "Export Embroidery - Test"
 
     filepath: bpy.props.StringProperty(subtype="FILE_PATH")
-
+    
     @classmethod
     def poll(cls, context):
-        return True
-
+        return (context.active_object is not None
+                and context.active_object.type == 'MESH')
+    
     def execute(self, context: bpy.types.Context | None)-> set[Any]:
+        
         if not context:
             return {'CANCELLED'}
         if context.active_object:
-            export_object(self.filepath, ExportFormat.JSON, context.active_object)
+            settings = bpy.context.window_manager.emb_settings
+            export_object(context.active_object, settings.scale_float, settings.format_list, self.filepath)
             return {'PASS_THROUGH'}
         else:
             return {'CANCELLED'}

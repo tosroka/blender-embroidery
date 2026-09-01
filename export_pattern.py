@@ -1,9 +1,8 @@
 import os
 import sys
-from enum import Enum
 from pathlib import Path
 
-import bpy 
+import bpy
 
 sys.path.insert(0, os.path.dirname(__file__)+"/pyembroidery")
 import pyembroidery
@@ -22,17 +21,13 @@ def build_pattern_from_mesh(object: bpy.types.Object, scale) -> pyembroidery.Emb
 
     return pattern
 
-def export_object(object: bpy.types.Object, scale, format, filepath: Path):
+def export_object(object: bpy.types.Object, scale, writer, filepath: Path):
     # Create EmbPattern from blender curve
     pattern = build_pattern_from_mesh(object, scale)
-    match format:
-        case "txt":
+    match writer:
+        case pyembroidery.TxtWriter: # type: ignore[attr-defined]
             with Path(filepath).open("wb") as f:
-                pyembroidery.write_txt(pattern,f)
-        case "json":
+                writer.write(pattern,f)
+        case _:
             with Path(filepath).open("w") as f:
-                pyembroidery.write_json(pattern,f)
-        case "gcode":
-            with Path(filepath).open("wb") as f:
-                pyembroidery.write_gcode(pattern,f)
-    
+                writer.write(pattern,f)

@@ -9,7 +9,6 @@ from .exporters_factory import build_operators
 from .panel import EmbroideryPanel, ExportSettings
 
 sys.path.insert(0, os.path.dirname(__file__)+"/pyembroidery")
-import pyembroidery  # noqa: F401
 
 operators = build_operators()
 
@@ -23,9 +22,9 @@ class EmbroideryExportMenu(bpy.types.Menu):
         if layout is None:
             return
 
-        for operator in operators:
+        for op in operators:
             layout.operator_context = 'INVOKE_DEFAULT'
-            layout.operator(operator.bl_idname, text=operator.bl_label or operator.__name__)
+            layout.operator(op.bl_idname, text=op.bl_label or op.__name__)
 
 
 def make_menu_func(menu_id, label):

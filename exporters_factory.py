@@ -37,7 +37,7 @@ class ExportTemplate(bpy.types.Operator):
     bl_idname = "emb.export_test"
     bl_label = "Export Embroidery - Test"
 
-def build_operator_class(ext, description, writer):
+def build_operator_class(ext, description, writer) -> type[bpy.types.Operator]:
     annotations = {
         "filepath": bpy.props.StringProperty(
             name="File Path",

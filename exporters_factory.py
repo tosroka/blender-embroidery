@@ -53,7 +53,8 @@ def build_operator_class(ext, description, writer):
         "poll": classmethod(poll),
         "invoke": invoke,
         "writer": writer,
-        "__annotations__": annotations
+        "__annotations__": annotations,
+        "__doc__": f"Export pattern to {ext.upper()} file"
     }
     class_name = f"EMB_OT_{ext}"
     return type(class_name, (bpy.types.Operator,), class_attributes)

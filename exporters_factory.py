@@ -1,6 +1,7 @@
-import sys
 import os
+import sys
 from typing import Any
+
 import bpy
 
 sys.path.insert(0, os.path.dirname(__file__)+"/pyembroidery")
@@ -31,11 +32,18 @@ def poll(cls, context):
     return (context.active_object is not None
             and context.active_object.type == 'MESH')
 
+def get_export_scale(ext: str):
+    match ext:
+        case "json":
+            return 10000
+        case _:
+            return 1
 
-class ExportTemplate(bpy.types.Operator):
-    """Export embroidery test"""
-    bl_idname = "emb.export_test"
-    bl_label = "Export Embroidery - Test"
+def extract_ext_options(ext):
+    return {"scale": bpy.props.FloatProperty(
+        name="Pattern scale",
+        default=get_export_scale(ext),
+    )} #TODO
 
 def build_operator_class(ext, description, writer) -> type[bpy.types.Operator]:
     annotations = {
@@ -43,12 +51,18 @@ def build_operator_class(ext, description, writer) -> type[bpy.types.Operator]:
             name="File Path",
             description="Path to the file",
             subtype='FILE_PATH'
-        )
+        ),
+        "filter_glob": bpy.props.StringProperty(
+            default=f"*.{ext}",
+            options={'HIDDEN'}),
+        **extract_ext_options(ext)
     }
 
     class_attributes = {
         "bl_idname": f"emb.export_{ext}",
         "bl_label": f"{description} (.{ext})",
+        "bl_options":{'UNDO', 'PRESET'},
+        "filename_ext" : f".{ext}",
         "execute": execute,
         "poll": classmethod(poll),
         "invoke": invoke,

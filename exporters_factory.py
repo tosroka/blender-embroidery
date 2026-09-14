@@ -74,9 +74,11 @@ def build_operator_class(ext, description, writer) -> type[bpy.types.Operator]:
     return type(class_name, (bpy.types.Operator,), class_attributes)
 
 
-def build_operators():
+def build_operators() -> list[type[bpy.types.Operator]]:
     to_register = []
     for format in pyembroidery.supported_formats():
         operator_class = build_operator_class(format['extension'], format["description"], format.get('writer', None))
         to_register.append(operator_class)
     return to_register
+
+operators = build_operators()

@@ -1,5 +1,8 @@
 import bpy
 
+from .exporters_factory import operators
+
+
 class ExportSettings(bpy.types.PropertyGroup):
     scale_float: bpy.props.FloatProperty(
         name="Scale",
@@ -8,12 +11,10 @@ class ExportSettings(bpy.types.PropertyGroup):
     )
     format_list: bpy.props.EnumProperty(
         name="Format",
-        items=[
-            ('txt', ".txt", "txt Format, Text File"),
-            ('json', ".json", "Json Export"),
-            ('gcode', ".gcode", "gcode Format, Text File"),
-        ],
+        items=[ (o.filename_ext, o.filename_ext, o.bl_label, 'NONE', idx) for idx, o in enumerate(operators)],
     )
+
+
 
 class EmbroideryPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D' # this will be in 3D view panel
@@ -25,34 +26,34 @@ class EmbroideryPanel(bpy.types.Panel):
     
     
     def draw(self, context):
-
         layout = self.layout
+        if not layout or not context:
+            return
+
         split_size = 0.5
 
         col = layout.column()
+        if not col: return 
         row = col.row(align=True)
+        if not row: return
         split = row.split(align=True, factor=split_size)
+        if not split: return
         row = split.row(align=True)
-        row.label(text='Format', translate=False)
+        if not row: return
+        row.label(text='File format', translate=False)
         row = split.row(align=True)
+        if not row: return
         row.prop(context.window_manager.emb_settings, 
                 'format_list', expand=False, text="", translate=False)
 
-        row = col.row()
-        split = row.split(align=True, factor=split_size)
-        row = split.row(align=True)
-        row.label(text='Scale', translate=False)
-        row = split.row(align=True)
-        row.prop(context.window_manager.emb_settings, 
-                 'scale_float', text="", slider=True)
+        # row = col.row()
+        # split = row.split(align=True, factor=split_size)
+        # row = split.row(align=True)
+        # row.label(text='Scale', translate=False)
+        # row = split.row(align=True)
+        # row.prop(context.window_manager.emb_settings, 
+        #          'scale_float', text="", slider=True)
 
-        row = col.row()
-        row = col.row(align=True)
-        row = col.row(align=True)
-        row = col.row(align=True)
-        split = row.split(align=True, factor=split_size)
-        row = split.row(align=True)
-        row.label(text='Export', translate=False)
-        row = split.row(align=True)
-        row.operator('emb.export_test', 
+        idx = context.window_manager.emb_settings.get("format_list", 0)
+        row.operator(operators[idx].bl_idname, 
                      emboss=True, text="", icon='EXPORT', translate=False) 

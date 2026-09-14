@@ -5,12 +5,10 @@ import sys
 
 import bpy
 
-from .exporters_factory import build_operators
+from .exporters_factory import operators
 from .panel import EmbroideryPanel, ExportSettings
 
 sys.path.insert(0, os.path.dirname(__file__)+"/pyembroidery")
-
-operators = build_operators()
 
 
 class EmbroideryExportMenu(bpy.types.Menu):

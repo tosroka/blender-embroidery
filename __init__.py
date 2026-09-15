@@ -7,6 +7,11 @@ import bpy
 
 from .exporters_factory import operators
 from .panel import EmbroideryPanel, ExportSettings
+from .pattern_operators import (
+    EMB_OT_add_curve_to_pattern,
+    EMB_OT_remove_curve_from_pattern,
+    PatternElement,
+)
 
 sys.path.insert(0, os.path.dirname(__file__)+"/pyembroidery")
 
@@ -35,6 +40,9 @@ def menu_func(self: bpy.types.Menu, context):
 classes = (ExportSettings,
            EmbroideryPanel,
            EmbroideryExportMenu,
+           EMB_OT_add_curve_to_pattern,
+           EMB_OT_remove_curve_from_pattern,
+           PatternElement,
            *operators)
 
 _register, _unregister = bpy.utils.register_classes_factory(classes)
@@ -45,6 +53,7 @@ def register():
     bpy.types.TOPBAR_MT_file_export.append(menu_func)  # type: ignore[arg-type]
 
     bpy.types.WindowManager.emb_settings = bpy.props.PointerProperty(type=ExportSettings)  # type: ignore[attr-defined]
+    bpy.types.WindowManager.emb_pattern_elements = bpy.props.CollectionProperty(type=PatternElement)  # type: ignore[attr-defined]
     print("Loaded Blender embroidery")
 
 
@@ -53,4 +62,5 @@ def unregister():
 
     _unregister()
     del bpy.types.WindowManager.emb_settings  # type: ignore[attr-defined]
+    del bpy.types.WindowManager.emb_pattern_elements  # type: ignore[attr-defined]
     print("Unloaded Blender embroidery")

@@ -29,8 +29,8 @@ def invoke(self, context: bpy.types.Context | None, event)-> set[Any]:
     return {'RUNNING_MODAL'}
 
 def poll(cls, context):
-    return (context.active_object is not None
-            and context.active_object.type == 'MESH')
+    return (context.window_manager.emb_pattern_elements is not None
+            and len(context.window_manager.emb_pattern_elements) > 0)
 
 def get_export_scale(ext: str):
     match ext:

@@ -14,8 +14,6 @@ class ExportSettings(bpy.types.PropertyGroup):
         items=[ (o.filename_ext, o.filename_ext, o.bl_label, 'NONE', idx) for idx, o in enumerate(operators)], # type: ignore
     )
 
-
-
 class EmbroideryPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D' # this will be in 3D view panel
     bl_region_type = "UI" # 'N' panel
@@ -25,7 +23,19 @@ class EmbroideryPanel(bpy.types.Panel):
     bl_label = "Embroidery Export"
 
     def draw_object_stack(self, layout: bpy.types.UILayout):
-        layout.label(text='Pattern', translate=False)
+        layout.label(text='Pattern stack')
+        box = layout.box()
+
+        pattern_elements : bpy.types.CollectionProperty = bpy.context.window_manager.emb_pattern_elements
+
+        for obj in pattern_elements:
+            row = box.row(align=True)
+            row.label(text=obj.name)
+            row.prop(obj, 'color', text="")
+
+        row = layout.row()
+        row.operator("emb.add_curve_to_pattern", emboss=True, text="Add object", icon="ADD")
+        row.operator("emb.remove_curve_from_pattern", emboss=True, text="Remove object", icon="REMOVE")
 
     def draw_export(self, layout: bpy.types.UILayout, types_enum_prop: bpy.types.PropertyGroup):
         # format selector and export button
@@ -66,7 +76,7 @@ class EmbroideryPanel(bpy.types.Panel):
             return
 
         settings = context.window_manager.emb_settings
-        
+
         self.draw_object_stack(layout)
         self.draw_export(layout, settings)
 
